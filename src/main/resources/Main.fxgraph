@@ -1,0 +1,32 @@
+package fxml
+
+import javafx.scene.Scene
+import javafx.stage.Stage
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.VBox
+import javafx.scene.control.TabPane
+import javafx.scene.control.Tab
+import javafx.scene.control.ScrollPane
+import javafx.scene.layout.FlowPane
+import javafx.geometry.Insets
+
+dynamic component Main {
+	Stage {
+		scene : Scene {
+			root : BorderPane id root { 
+				right : VBox id status,
+				center : TabPane id centerTabPane {
+					Tab id updatedTab {
+						text : "Updated",
+						ScrollPane { FlowPane id updatedPane {styleClass : ["flowpane"]} }
+					},
+					Tab id newTab {
+						text : "New",
+						ScrollPane { FlowPane id newPane {styleClass : ["flowpane"]} }
+					}
+				}
+
+			}
+		}
+	}
+}

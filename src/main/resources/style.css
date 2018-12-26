@@ -1,0 +1,46 @@
+.scroll-pane {
+	-fx-fit-to-width: true;
+	-fx-fit-to-height: true;
+	-fx-vbar-policy: always;
+}
+
+.flowpane {
+	  -fx-padding: 10;
+	 -fx-hgap:10;
+	 -fx-vgap:10;
+}
+
+.unit {
+	-fx-background-color: black;
+}
+
+.unit.selected {
+	-fx-background-color: crimson;
+	-fx-border-width: 3;
+	-fx-border-color: crimson ;
+}
+
+.unit .title,.unit .data {
+	-fx-fill:white;
+	-fx-text-fill:white;
+	-fx-text-alignment:center;
+	-fx-background-color:rgba(0,0,0,0.5);
+	-fx-font-family: Consolas;
+}
+
+.unit .data {
+	-fx-font-size:0.8em;
+	-fx-font-weight: bold;
+	-fx-padding: 2 0.0  0.0 2;
+}
+
+#status {
+	-fx-padding:3 2 10 5;
+	-fx-background-color:black;
+}
+#status .text {
+	-fx-fill:white;
+}
+#status .button {
+-fx-background-color:lightseagreen ;	
+}
