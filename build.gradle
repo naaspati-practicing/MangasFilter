@@ -5,7 +5,7 @@ repositories {
     jcenter()
 }
 
-version = '.02'
+version = '.03'
 sourceCompatibility = JavaVersion.VERSION_1_8 
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -19,8 +19,11 @@ dependencies {
 }
 
 task deleteJars {
-  delete fileTree(appdir) {
-    include '*.jar'
+  doLast {
+     file(appdir).listFiles().each({
+       if(it.name.endsWith('.jar'))
+         it.delete();
+     });
   }
 }
 
@@ -62,5 +65,6 @@ def versionText() {
 jar {
   exclude '*.fxgraph'
 }
+
 
 defaultTasks 'install'

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import sam.manga.samrock.urls.MangaUrlsMeta;
 import sam.manga.scrapper.ScrappedManga;
 import sam.myutils.Checker;
 import sam.tsv.Row;
@@ -30,10 +29,10 @@ class Manga {
     	this.status = status;
         this.rank = rank;
     }
-    public Manga(Row row) {
+    public Manga(Row row, String urlColumn) {
     	this.id = row.getInt(MANGA_ID);
     	this.mangaName = row.get(MANGA_NAME);
-    	this.url = row.get(MangaUrlsMeta.MANGAFOX); 
+    	this.url = row.get(urlColumn); 
         this.row0 = row;
     }
 

@@ -61,4 +61,7 @@ public class Scrapper  {
 	public ScrappedManga scrapManga(String url) throws Exception {
 		return scrapper.scrapManga(url);
 	}
+	public String getUrlColumn() {
+		return scrapper.urlColumn();
+	}
 }

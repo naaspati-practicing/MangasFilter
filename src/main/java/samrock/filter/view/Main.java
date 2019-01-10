@@ -502,7 +502,7 @@ public class Main extends Application implements Counts {
 			FlowPane root = type == Type.NEW ? newPane : updatedPane;
 
 			tsv.stream()
-			.map(Manga::new)
+			.map(r -> new Manga(r, scrapper.getUrlColumn()))
 			.peek(mangas::add)
 			.map(m -> new Unit(m, type))
 			.peek(units::add)
