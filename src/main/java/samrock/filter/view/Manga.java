@@ -1,16 +1,13 @@
 package samrock.filter.view;
 
+import static sam.collection.ArraysUtils.removeIf;
 import static sam.manga.samrock.mangas.MangasMeta.MANGA_ID;
 import static sam.manga.samrock.mangas.MangasMeta.MANGA_NAME;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import sam.manga.scrapper.ScrappedChapter;
 import sam.manga.scrapper.ScrappedManga;
 import sam.myutils.Checker;
 import sam.tsv.Row;
-
 class Manga {
     final Row row0;
     private ChapterFilter2 filter;
@@ -41,50 +38,40 @@ class Manga {
         return row0.toString();
     }
     
-    private List<Chapter> nnew, existing, chapters;
+    private ScrappedChapter[] nnew, existing, chapters;
+    private static final ScrappedChapter[] EMPTY = new ScrappedChapter[0];
     
-    public List<Chapter> getNew() {
+    public ScrappedChapter[] getNew() {
 		return nnew;
 	}
-    public List<Chapter> getExisting() {
+    public ScrappedChapter[] getExisting() {
 		return existing;
 	}
-    public List<Chapter> getAll() {
+    public ScrappedChapter[] getAll() {
 		return chapters;
 	}
-    public void addChapter(Chapter c) {
-    	if(chapters == null)
-    		chapters = new ArrayList<>();
-    	
-    	chapters.add(c);
+    public void setChapter(ScrappedChapter[] chaps) {
+    	this.chapters = chaps;
     	
         if(filter == null)
-            nnew = chapters;
+            nnew = chaps;
         else {
-        	if(nnew == null) {
-        		nnew = new ArrayList<>();
-                existing = new ArrayList<>();
-        	}
-        	
-        	if(filter.test(c.getNumber()))
-                existing.add(c);
-            else
-                nnew.add(c);
+        	existing = removeIf(chaps, c -> !filter.test(c.getNumber()));
+        	nnew = removeIf(chaps, c -> filter.test(c.getNumber()));
         }
+        
+        if(Checker.isEmpty(nnew))
+        	nnew = EMPTY;
+        if(Checker.isEmpty(existing))
+        	existing = EMPTY;
+        if(Checker.isEmpty(chapters))
+        	chapters = EMPTY;
     }
-    public void scrappingComplete() {
-    	chapters = list(chapters);
-    	nnew = list(nnew);
-    	existing = list(existing);
-    }
-    private List<Chapter> list(List<Chapter> list) {
-		return Checker.isEmpty(list) ? Collections.emptyList() : Collections.unmodifiableList(list);
-	}
 	public String getDirName() {
         return dir_name;
     }
 	public int chaptersCount() {
-		return chapters == null ? 0 : chapters.size() ;
+		return chapters == null ? 0 : chapters.length;
 	}
 	public void setScrappedManga(ScrappedManga manga) {
 		this.scrapperManga = manga;

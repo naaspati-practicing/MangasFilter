@@ -1,6 +1,6 @@
 package samrock.filter.view;
-
 import static sam.fx.helpers.FxMenu.menuitem;
+import static sam.myutils.Checker.isNotEmpty;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +28,7 @@ import sam.config.MyConfig;
 import sam.fx.alert.FxAlert;
 import sam.fx.clipboard.FxClipboard;
 import sam.fx.popup.FxPopupShop;
+import sam.manga.scrapper.ScrappedChapter;
 import sam.manga.scrapper.ScrappedManga;
 import sam.myutils.MyUtilsExtra;
 import sam.reference.WeakAndLazy;
@@ -114,8 +115,8 @@ class Logs extends Stage {
 }
 
 class About extends Stage {
-	final ListView<Chapter> nnew = new ListView<>();
-	final ListView<Chapter> old = new ListView<>();
+	final ListView<ScrappedChapter> nnew = new ListView<>();
+	final ListView<ScrappedChapter> old = new ListView<>();
 	final ListView<Double> numbers = new ListView<>();
 	final HBox pane = new HBox(bpane("New", nnew), bpane("Remaining", old), bpane("samrock", numbers));
 	final Hyperlink title = new Hyperlink();
@@ -135,10 +136,10 @@ class About extends Stage {
 		for (Node b : new Node[] { title, id, url })
 			VBox.setMargin(b, new Insets(0, 0, 0, 5));
 
-		Callback<ListView<Chapter>, ListCell<Chapter>> rendre = cb -> new ListCell<Chapter>() {
+		Callback<ListView<ScrappedChapter>, ListCell<ScrappedChapter>> rendre = cb -> new ListCell<ScrappedChapter>() {
 
 			@Override
-			protected void updateItem(Chapter item, boolean empty) {
+			protected void updateItem(ScrappedChapter item, boolean empty) {
 				super.updateItem(item, empty);
 
 				if (item == null || empty)
@@ -199,11 +200,11 @@ class About extends Stage {
 		if (manga.getFilter() != null)
 			numbers.getItems().setAll(manga.getFilter().all());
 
-		if (manga.getNew() != null && !manga.getNew().isEmpty()) {
+		if (isNotEmpty(manga.getNew())) {
 			nnew.getItems().addAll(manga.getNew());
 			FXCollections.reverse(nnew.getItems());
 		}
-		if (manga.getExisting() != null && !manga.getExisting().isEmpty()) {
+		if (isNotEmpty(manga.getExisting())) {
 			old.getItems().addAll(manga.getExisting());
 			FXCollections.reverse(old.getItems());	
 		}

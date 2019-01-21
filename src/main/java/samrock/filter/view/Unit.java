@@ -34,6 +34,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import sam.myutils.Checker;
 
 class Unit extends StackPane {
     static final int MAX_WIDTH = Optional.ofNullable(System.getenv("MAX_WIDTH")).map(Integer::parseInt).orElse(120);
@@ -127,12 +128,12 @@ class Unit extends StackPane {
     public void setHtmlLoaded() {
         htmlloaded = true;
         
-        if (manga.getNew().isEmpty()) Counts.increment(zeroNew);
-        else Counts.add(newChapters, manga.getNew().size());
+        if (Checker.isEmpty(manga.getNew())) Counts.increment(zeroNew);
+        else Counts.add(newChapters, manga.getNew().length);
         
         Platform.runLater(() -> {
         	data.setText(String.format("%s/%s\n%s\n%s", 
-        			manga.getNew().size(),manga.chaptersCount(),
+        			manga.getNew().length,manga.chaptersCount(),
         			manga.getStatus(),
         			manga.getRank()
         			));

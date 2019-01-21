@@ -15,7 +15,10 @@ ext.appdir = file(/D:\Core Files\Emulator\dolphin\Manga\Data\SamrockTools\filter
 dependencies {
   compile 'org.xerial:sqlite-jdbc:3.7.2'
   compile 'org.jsoup:jsoup:1.11.3'
-  compile files('myutils.jar', '../Scrapper/build/libs/Scrapper.jar')
+  compile files('myutils.jar')
+  implementation ( project(':Scrapper')) {
+	  transitive = false
+	}
 }
 
 task deleteJars {

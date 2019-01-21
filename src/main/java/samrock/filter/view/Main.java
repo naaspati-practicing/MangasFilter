@@ -52,6 +52,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import sam.collection.ArraysUtils;
 import sam.console.ANSI;
 import sam.fx.alert.FxAlert;
 import sam.fx.helpers.FxClassHelper;
@@ -60,7 +61,8 @@ import sam.fx.helpers.FxText;
 import sam.fx.popup.FxPopupShop;
 import sam.manga.samrock.SamrockDB;
 import sam.manga.samrock.chapters.ChapterUtils;
-import sam.manga.scrapper.ChapterScrapListener;
+import sam.manga.scrapper.FailedChapter;
+import sam.manga.scrapper.ScrappedChapter;
 import sam.manga.scrapper.ScrappedManga;
 import sam.myutils.Checker;
 import sam.tsv.Row;
@@ -304,18 +306,14 @@ public class Main extends Application implements Counts {
 						ScrappedManga sm = scrapper.scrapManga(m.url);
 
 						m.setScrappedManga(sm);
-						sm.getChapters(new ChapterScrapListener() {
-							@Override
-							public void onChapterSuccess(double number, String volume, String title, String url) {
-								m.addChapter(new Chapter(number, title));
+						ScrappedChapter[] chaps = ArraysUtils.removeIf(sm.getChapters(), c -> {
+							if(c instanceof FailedChapter) {
+								System.out.println(ANSI.red("failed chapter: ")+c);
+								return true;
 							}
-							@Override
-							public void onChapterFailed(String msg, Throwable e, String number, String volume, String title, String url) {
-								System.out.printf(ANSI.red("chapter failed: msg: \"%s\" , number: \"%s\" , volume: \"%s\" , title: \"%s\" , url: \"%s\" "), msg, number, volume, title, url);
-								e.printStackTrace();
-							}
+							return false;
 						});
-						m.scrappingComplete();
+						m.setChapter(chaps);
 						u.setHtmlLoaded();
 
 						if(u.isThumbLoaded())

@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import sam.internetutils.InternetUtils;
 import sam.manga.samrock.thumb.ThumbUtils;
 import sam.manga.scrapper.ScrappedManga;
+import sam.manga.scrapper.ScrapperException;
 import sam.manga.scrapper.scrappers.impl.ScrapperCached;
 
 public class Scrapper  {
@@ -21,7 +22,7 @@ public class Scrapper  {
                 if (instance == null) {
                     try {
                         instance = new Scrapper();
-                    } catch (IOException | InstantiationException | IllegalAccessException e) {
+                    } catch (IOException | InstantiationException | IllegalAccessException | ScrapperException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -53,7 +54,7 @@ public class Scrapper  {
     	Files.move(internetUtils.download(new URL(manga.getThumbUrl())), p, StandardCopyOption.REPLACE_EXISTING);
     	return p;
     }
-    protected Scrapper() throws IOException, InstantiationException, IllegalAccessException {
+    protected Scrapper() throws IOException, InstantiationException, IllegalAccessException, ScrapperException {
     	scrapper = ScrapperCached.createDefaultInstance();
     	thumbsCache = scrapper.cacheDir.toPath().resolve("THUMBS");
     	Files.createDirectories(thumbsCache);
