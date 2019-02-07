@@ -5,11 +5,11 @@ repositories {
     jcenter()
 }
 
-version = '.03'
+version = '.05'
 sourceCompatibility = JavaVersion.VERSION_1_8 
 targetCompatibility = JavaVersion.VERSION_1_8
 
-mainClassName = 'samrock.filter.view.Main' 
+mainClassName = 'Main' 
 ext.appdir = file(/D:\Core Files\Emulator\dolphin\Manga\Data\SamrockTools\filter\app/)
 
 dependencies {

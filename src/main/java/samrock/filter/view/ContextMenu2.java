@@ -59,7 +59,7 @@ public class ContextMenu2 extends ContextMenu {
 	private Manga manga;
 	private Unit unit;
 	private final MenuItem copyId = menuitem("copy ID", e1 -> FxClipboard.setString(String.valueOf(manga.id)));
-	private final MenuItem browserMenuItem = menuitem("open in browser", e1 -> Main.getHostService().showDocument(manga.url));
+	private final MenuItem browserMenuItem = menuitem("open in browser", e1 -> App.getHostService().showDocument(manga.url));
 	private final WeakAndLazy<About> about = new WeakAndLazy<>(About::new);
 	private final MenuItem chapterMenuItem = menuitem("chapters", e1 -> about.get().show(manga));
 	private final WeakAndLazy<Logs> logStage = new WeakAndLazy<>(Logs::new);
@@ -73,7 +73,7 @@ public class ContextMenu2 extends ContextMenu {
 		browserMenuItem.setDisable(manga.url == null);
 		chapterMenuItem.setDisable(!unit.isHtmlloaded());
 		showLogs.setDisable(unit.getLogs() == null || unit.getLogs().length() == 0);
-		Stage s = Main.getStage();
+		Stage s = App.getStage();
 		show(s, e.getScreenX(), e.getScreenY());
 	}
 
@@ -102,7 +102,7 @@ class Logs extends Stage {
 	public Logs() {
 		super(StageStyle.UNIFIED);
 		initModality(Modality.APPLICATION_MODAL);
-		initOwner(Main.getStage());
+		initOwner(App.getStage());
 
 		t.setEditable(false);
 		setScene(new Scene(t, 300, 300));
@@ -128,7 +128,7 @@ class About extends Stage {
 
 	public About() {
 		initModality(Modality.WINDOW_MODAL);
-		initOwner(Main.getStage());
+		initOwner(App.getStage());
 		setWidth(400);
 		setWidth(400);
 
@@ -163,7 +163,7 @@ class About extends Stage {
 			}
 		});
 
-		title.setOnMouseClicked(e -> Main.getHostService()
+		title.setOnMouseClicked(e -> App.getHostService()
 				.showDocument(mangafolder.resolve(title.getUserData().toString()).toUri().toString()));
 		id.setOnMouseClicked(e -> {
 			if (e.getClickCount() > 1) {
@@ -171,7 +171,7 @@ class About extends Stage {
 				FxPopupShop.showHidePopup("copied: " + id.getText(), 1500);
 			}
 		});
-		url.setOnAction(e -> Main.getHostService().showDocument(url.getText()));
+		url.setOnAction(e -> App.getHostService().showDocument(url.getText()));
 		setTitle("summery");
 	}
 

@@ -15,7 +15,6 @@ class Manga {
 	public final int id;
 	public final String mangaName;
 	public final String url;
-	private ScrappedManga scrapperManga;
 	private String status, rank;
     
     public void setSamrock(ChapterFilter2 filter, String dir) {
@@ -50,7 +49,7 @@ class Manga {
     public ScrappedChapter[] getAll() {
 		return chapters;
 	}
-    public void setChapter(ScrappedChapter[] chaps) {
+    public void setChapters(ScrappedChapter[] chaps) {
     	this.chapters = chaps;
     	
         if(filter == null)
@@ -73,6 +72,17 @@ class Manga {
 	public int chaptersCount() {
 		return chapters == null ? 0 : chapters.length;
 	}
+	public String getStatus() {
+		return status;
+	}
+	public String getRank() {
+		return rank;
+	}
+	public ChapterFilter2 getFilter() {
+		return filter;
+	}
+	private ScrappedManga scrapperManga;
+
 	public void setScrappedManga(ScrappedManga manga) {
 		this.scrapperManga = manga;
 	}
@@ -84,14 +94,5 @@ class Manga {
 	}
 	public ScrappedManga getScrappedManga() {
 		return scrapperManga;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public String getRank() {
-		return rank;
-	}
-	public ChapterFilter2 getFilter() {
-		return filter;
 	}
 }

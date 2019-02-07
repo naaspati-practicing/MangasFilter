@@ -1,17 +1,12 @@
 package samrock.filter.view;
-
 import static sam.fx.helpers.FxClassHelper.addClass;
 import static sam.fx.helpers.FxClassHelper.toggleClass;
 import static samrock.filter.view.Counts.newChapters;
 import static samrock.filter.view.Counts.selectedCount;
 import static samrock.filter.view.Counts.zeroNew;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Optional;
@@ -35,13 +30,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import sam.myutils.Checker;
-
-class Unit extends StackPane {
+class Unit extends StackPane  {
     static final int MAX_WIDTH = Optional.ofNullable(System.getenv("MAX_WIDTH")).map(Integer::parseInt).orElse(120);
     final static Set<Unit> selected = Collections.newSetFromMap(new IdentityHashMap<>());
 
     final Manga manga;
-    private Label data = label("");
+    private Label data = label("queued");
     private transient boolean thumbLoaded;
     private transient boolean htmlloaded;
     final Type type;
@@ -108,39 +102,14 @@ class Unit extends StackPane {
         toggleClass(this, "selected", true);
         Counts.set(selectedCount, selected.size());
     }
-    public void setImage(Path p) {
-        if(p == null) {
-            addError(null, "thumb not found");
-            return;
-        }
-        try(InputStream is = Files.newInputStream(p)) {
-            Image image = new Image(is, MAX_WIDTH, -1, true, true);
-            Platform.runLater(() -> {
-            	getChildren().set(0, new ImageView(image));
-                if(!htmlloaded)
-                    data.setText("loading html");
-                thumbLoaded = true;
-            });
-        } catch (IOException e) {
-            addError(e, "image loading error: ", e);
-        }
-    }
-    public void setHtmlLoaded() {
-        htmlloaded = true;
-        
-        if (Checker.isEmpty(manga.getNew())) Counts.increment(zeroNew);
-        else Counts.add(newChapters, manga.getNew().length);
-        
-        Platform.runLater(() -> {
-        	data.setText(String.format("%s/%s\n%s\n%s", 
-        			manga.getNew().length,manga.chaptersCount(),
-        			manga.getStatus(),
-        			manga.getRank()
-        			));
-        });
-    }
-    private static final Border red = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0), Insets.EMPTY));
-
+    
+	public void setImage(Image image) {
+		getChildren().set(0, new ImageView(image));
+		thumbLoaded = true;
+	}
+	
+	private static final Border red = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0), Insets.EMPTY));
+	
     public synchronized void addError(Throwable t, Object...msgs) {
         if(logs == null)
             logs = new StringBuilder().append(manga);
@@ -157,5 +126,25 @@ class Unit extends StackPane {
 
         if(title.getBorder() != red) 
             Platform.runLater(() -> title.setBorder(red));
+    }
+    
+    public void setStatus(String status) {
+    	data.setText(status);
+    }
+    void setHtmlLoaded() {
+        htmlloaded = true;
+        
+        if (Checker.isEmpty(manga.getNew())) 
+        	Counts.increment(zeroNew);
+        else 
+        	Counts.add(newChapters, manga.getNew().length);
+        
+        Platform.runLater(() -> {
+        	data.setText(String.format("%s/%s\n%s\n%s", 
+        			manga.getNew().length,manga.chaptersCount(),
+        			manga.getStatus(),
+        			manga.getRank()
+        			));
+        });
     }
 }
