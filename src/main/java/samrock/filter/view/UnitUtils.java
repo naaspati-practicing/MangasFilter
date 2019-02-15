@@ -51,6 +51,9 @@ final class UnitUtils {
 		});
 	}
 	private static boolean setImg(Path p, Unit u) {
+		if(u.isThumbLoaded())
+			return true;
+		
 		Image image = null;
 
 		if(Checker.exists(p)) {
@@ -73,7 +76,7 @@ final class UnitUtils {
 		html.execute(() -> {
 			String url = null;
 			fx(() -> u.setStatus("loading html"));
-			String sts = "download html: "+toString(m); 
+			String sts = "("+u.nth+") download html: "+toString(m); 
 			try {
 				add(activity, sts);
 				ScrappedManga manga = scrapper.scrap(m.url);

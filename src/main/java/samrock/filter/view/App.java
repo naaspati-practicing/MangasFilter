@@ -138,14 +138,11 @@ public class App extends Application implements Counts {
 				text(Counts.errorCount, "errors"),
 				text(newRemoved, "new Removed"),
 				text(updatedRemoved, "Updated Removed"),
-				new Separator(),new Separator(),
-				label("Activity"),
 				new Separator(),
 				new VBox(3, removeButton(),
 						selectZeros(),
 						selectAllButton(true),
 						selectAllButton(false),
-						activityBox(),
 						removeFromMangarock()
 						)
 				);
@@ -160,12 +157,15 @@ public class App extends Application implements Counts {
 				e1.printStackTrace();
 			}
 		});
+		root.setBottom(activityBox());
 	}
 
 	private Node activityBox() {
 		TextArea ta = new TextArea();
 		ta.setWrapText(true);
+		ta.setEditable(false);
 		ta.textProperty().bind(Bindings.createStringBinding(() -> String.join("\n", activity), activity));
+		ta.setPrefRowCount(2);
 		VBox.setVgrow(ta, Priority.ALWAYS);
 		return ta;
 	}
@@ -249,13 +249,7 @@ public class App extends Application implements Counts {
 	private FlowPane selectedPane() {
 		return centerTabPane.getSelectionModel().getSelectedItem() == updatedTab ? updatedPane : newPane;
 	}
-	private Node label(String string) {
-		Label l = new Label(string);
-		l.setMaxWidth(Double.MAX_VALUE);
-		l.setTextFill(Color.BLACK);
-		FxClassHelper.addClass(l, "status-title");
-		return l;
-	}
+	
 	private Node text(Observable to, String string) {
 		Text t = new Text();
 		FxClassHelper.addClass(t, "text");
@@ -344,10 +338,11 @@ public class App extends Application implements Counts {
 			final Tsv tsv = Tsv.parse(path);
 			FlowPane root = type == Type.NEW ? newPane : updatedPane;
 
+			int[] n = {0};
 			tsv.stream()
 			.map(r -> new Manga(r, MangaUrlsMeta.MANGAHERE)) // FIXME
 			.peek(mangas::add)
-			.map(m -> new Unit(m, type))
+			.map(m -> new Unit(n[0]++, m, type))
 			.peek(units::add)
 			.forEach(root.getChildren()::add);
 

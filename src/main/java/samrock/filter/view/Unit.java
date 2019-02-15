@@ -36,14 +36,15 @@ class Unit extends StackPane  {
 
     final Manga manga;
     private Label data = label("queued");
-    private transient boolean thumbLoaded;
-    private transient boolean htmlloaded;
+    private volatile boolean thumbLoaded, failed, htmlloaded;
     final Type type;
     private StringBuilder logs;
     private Label title;
+	final int nth;
 
-    public Unit(Manga manga, Type type) {
+    public Unit(int count, Manga manga, Type type) {
         this.type = type;
+        this.nth = count;
 
         addClass(this, "unit");
         this.manga = manga;
@@ -72,6 +73,12 @@ class Unit extends StackPane  {
             else select();
         });
     }
+    public boolean isFailed() {
+		return failed;
+	}
+    public void setFailed(boolean failed) {
+		this.failed = failed;
+	}
     private Label label(String text) {
     	Label l = new Label(text);
     	l.setWrapText(true);
@@ -111,6 +118,8 @@ class Unit extends StackPane  {
 	private static final Border red = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0), Insets.EMPTY));
 	
     public synchronized void addError(Throwable t, Object...msgs) {
+    	failed = true;
+    	
         if(logs == null)
             logs = new StringBuilder().append(manga);
 

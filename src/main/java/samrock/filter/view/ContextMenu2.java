@@ -60,6 +60,11 @@ public class ContextMenu2 extends ContextMenu {
 	private Unit unit;
 	private final MenuItem copyId = menuitem("copy ID", e1 -> FxClipboard.setString(String.valueOf(manga.id)));
 	private final MenuItem browserMenuItem = menuitem("open in browser", e1 -> App.getHostService().showDocument(manga.url));
+	private final MenuItem reload = menuitem("reload", e1 -> {
+		unit.setFailed(false);
+		UnitUtils.load(unit);
+		((MenuItem)e1.getSource()).setDisable(true);
+	});
 	private final WeakAndLazy<About> about = new WeakAndLazy<>(About::new);
 	private final MenuItem chapterMenuItem = menuitem("chapters", e1 -> about.get().show(manga));
 	private final WeakAndLazy<Logs> logStage = new WeakAndLazy<>(Logs::new);
@@ -70,6 +75,7 @@ public class ContextMenu2 extends ContextMenu {
 		manga = unit.manga;
 		this.unit = unit;
 
+		reload.setDisable(!unit.isFailed());
 		browserMenuItem.setDisable(manga.url == null);
 		chapterMenuItem.setDisable(!unit.isHtmlloaded());
 		showLogs.setDisable(unit.getLogs() == null || unit.getLogs().length() == 0);
@@ -80,7 +86,6 @@ public class ContextMenu2 extends ContextMenu {
 	private void showDescription(Unit unit) {
 		ScrappedManga sm = unit.manga.getScrappedManga();
 		Manga m = unit.manga;
-		
 
 		if(sm == null) {
 			FxPopupShop.showHidePopup("no scrapperManga", 1500);
